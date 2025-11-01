@@ -37,7 +37,7 @@ Route::post('/student-login', [StudentController::class, 'loginStudent']);
 // proctected route accessible by admin token and student token
 Route::middleware(['auth:sanctum', 'checkAbilities:student-access,admin-access'])->group(function () {
 
-    Route::get('/student-book-list', [StudentController::class, 'getStudentBooks']);
+    Route::get('/student-book-list/{student_id}', [StudentController::class, 'getStudentBooks']);
     Route::get('/student-book/{student_id}', [StudentController::class, 'getRentBooks']);
     Route::post('/student-book/{student_id}', [StudentController::class, 'rentBook']);
     Route::get('/students-show/{student_id}', [AdminController::class, 'showStudent']);

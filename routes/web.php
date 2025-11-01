@@ -84,6 +84,9 @@ Route::get('/student/{student_id}/profile', function ($student_id) {
 
     dd($profile);
 });
+Route::controller(StudentController::class)->group(function () {
+    Route::get('/test', 'function');
+})->middleware('auth:sanctum');
 
 Route::get('/test-movie', function () {
     $movie = Movie::find(1);

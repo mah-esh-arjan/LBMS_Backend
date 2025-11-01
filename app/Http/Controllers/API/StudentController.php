@@ -33,8 +33,9 @@ class StudentController extends Controller
         }
 
         $token = $student->createToken('Student', ['student-access'])->plainTextToken;
+        $bookIds = $student->books->pluck('id')->toArray();
 
-        return jsonResponse(['token' => $token, 'Student' => $student,'count' => count($student->books) ,'role' => 'student'], 'Token has been created successfully', 201);
+        return jsonResponse(['token' => $token, 'Student' => $student, 'count' => count($student->books), 'role' => 'student','bookIds' => $bookIds], 'Token has been created successfully', 201);
     }
 
 
@@ -58,7 +59,7 @@ class StudentController extends Controller
             $newImageName = time() . '-' . $request->name . '.' . $request->image->extension();
             $request->image->move(public_path('images'), $newImageName);
         }
-        $data =  Student::create([
+        $data = Student::create([
             'name' => $validatedData['name'],
             'password' => $validatedData['password'],
             'age' => $validatedData['age'],
@@ -91,17 +92,25 @@ class StudentController extends Controller
         Log::info($request);
         $student = Student::with('books')->where('student_id', $student_id)->first();
 
-        $student->books()->sync($request->arrayId);
+        $student->books()->syncwithoutDetaching($request->arrayId);
 
         $data = [
-            'student' => $student,
-            'count' => count($student->books)
+            'student' => $student->load('books'),
+            'count' => count($student->books)   
+
         ];
         return jsonResponse($data, 'Books have been rented sucessfully', 201);
     }
-    public function getStudentBooks()
+
+    public function getStudentBooks($student_id)
     {
-        $data = Book::all();
+        $books = Book::all();
+
+        $student = Student::with('books')->where('student_id', $student_id)->first();
+
+        $bookIds = $student->books->pluck('id')->toArray();
+
+        $data = ['books' => $books, 'bookIds' => $bookIds];
 
         return jsonResponse($data, 'list of all the books', 200);
     }
@@ -117,9 +126,10 @@ class StudentController extends Controller
         // $student = Student::with('books')->findOrFail($student_id);
 
         $student = Student::with('books')->where('student_id', $student_id)->first();
+
+        // $student->books
         return response()->json([
             'student' => $student,
-
             'count' => count($student->books)
 
         ]);
