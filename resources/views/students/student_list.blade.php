@@ -4,9 +4,6 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 text-dark font-weight-bold">List of Students</h1>
-        <a href="/add-student" class="btn btn-success btn-md">
-            <i class="bi bi-plus-circle mr-1"></i> Add Student
-        </a>
     </div>
 
     <div class="card shadow-sm border-0">

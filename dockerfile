@@ -23,11 +23,16 @@ COPY package*.json ./
 # Copy the full Laravel codebase
 COPY . .
 
+#Replace the env for docker instead
+COPY .env.docker .env
+
 #run the back end dependency
 RUN composer install
 
 #sam for front end
 RUN npm install
+
+
 
 # Set environment variable for port (optional)
 ENV PORT=9000

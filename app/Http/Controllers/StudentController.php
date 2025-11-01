@@ -56,7 +56,7 @@ class StudentController extends Controller
 
     public function editStudent($student_id)
     {
-
+        // dd('test');
         $data = Student::find($student_id);
 
         return view('/students.edit_student', compact('data'));

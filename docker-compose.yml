@@ -1,13 +1,27 @@
+version: "3.9"
+
 services:
   app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: docker_test
     ports:
-      - "8000:9000"
-    # volumes:
-    #   - ./:/app [mounting will you give live code instead of the built image]
-    env_file:
-      - .env
+      - "8000:9000"   # Host:Container
+    # Remove env_file override if you want to use .env inside the image
+    # env_file:
+    #   - .env
     stdin_open: true
     tty: true
+    # Start container with bash for debugging OR run Laravel dev server
     command: >
-      /bin/sh -c "php artisan config:clear && php artisan config:cache && php artisan serve --host=0.0.0.0 --port=9000"
+      /bin/bash -c "
+        # Ensure Laravel uses latest env
+        rm -f bootstrap/cache/config.php &&
+        php artisan config:clear &&
+        php artisan cache:clear &&
+        php artisan config:cache &&
+        php artisan serve --host=0.0.0.0 --port=9000
+      "
+    # volumes:
+    #   - ./:/app   # Optional: for live code changes
